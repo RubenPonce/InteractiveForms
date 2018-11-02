@@ -3,8 +3,21 @@ console.log('interactive form test');
 //if option value = "other"
   //create input field type "text" under options
 
-$jobTitle = $("#title option");
-for (var i = 0; i < $jobTitle.length; i++) {
-  if($jobTitle[i].value === "other")
-  $("#title").parent().append('<input></input>');
-}
+$jobTitle = $("#title");
+$jobInput = $("#jobInput");
+$otherLabel = $("#otherLabel");
+
+$otherLabel.hide();
+$jobInput.hide();
+
+$jobTitle.change( function(){
+  if( $(this).val() === 'other'){
+    $otherLabel.show();
+      $jobInput.show();
+
+    }
+      else{
+        $otherLabel.hide();
+        $jobInput.hide();
+      }
+  });
