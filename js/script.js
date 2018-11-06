@@ -89,19 +89,19 @@ $activityEvents.change(function(e){
   if(e.target.className==="morningTime"){
       morningActivity[i].disabled = true;
       e.target.disabled = false;
-    }if(e.target.checked ===false){
+    }if(e.target.checked ===false&&e.target.className ==="morningTime"){
       morningActivity[i].disabled = false;
     }
   }
-
   for (let i = 0; i < dayActivity.length; i++) {
   if(e.target.className==="dayTime"){
       dayActivity[i].disabled = true;
       e.target.disabled = false;
-    }if(e.target.checked ===false){
+    }if(e.target.checked ===false&&e.target.className ==="dayTime"){
       dayActivity[i].disabled = false;
     }
   }
+
   // if($activityEvents[i].checked){
   //   $activityEvents[i].disabled = false;
   // } else if(e.target.checked===false){
