@@ -57,34 +57,56 @@ $shirtDesign.change( function(){
     }
   });
 
-//disable conflicting time schedules in field "activities"
-//add up total costs later
-  /*if a checkbox is check AND it conflicts with time, {
-    disable check boxes that it disables.
+// if CHECKED && has label regex(9AM){
+//   disable any checkbox that is UNCHECKED that has regex(9AM)
+// } else if CHECKED = FALSE{
+//enable any checkbox that is UNCHECKED that has regex(9AM)
+//}
 
-    else enable checkboxes
-}*/
-//gather values of time based on array of inputs.
-//$(".activities input")[i]
   //i = 0 none;
   //i = 1 conflicts with 3, 5
   // i = 2 conflicts with 4,6
 
 $activity = $(".activities");
-let activityEvents = $(".activities input");
-$activity.change( function(){
-  for (let i = 0; i < activityEvents.length; i++) {
-  if($(".activities input")[i].checked&& i%2 != 0){
-    console.log('checked');
-    $(".activities input")[2*i+1].disabled = true;
-    $(".activities input")[2*i+3].disabled = true;
-    $(".activities input")[i].disabled = false;
+$activityEvents = $(".activities input");
+const labelofInputAM = /Tuesday ?9[a][m]/;
+const labelofInputPM = /Tuesday ?1[p][m]/;
+  let morningActivity = [];
+  let dayActivity = [];
+  for (let i = 0; i < $activityEvents.length; i++) {
+    if(labelofInputAM.test($activityEvents.parent()[i].textContent)){
+        morningActivity.push($activityEvents[i]);
+        $activityEvents[i].className = 'morningTime';
+      }
+      else if (labelofInputPM.test($activityEvents.parent()[i].textContent)){
+        dayActivity.push($activityEvents[i])
+        $activityEvents[i].className = 'dayTime';
+      }
+  }
 
-  } else if($(".activities input")[i].checked&& i%2 === 0){
-    console.log('unchecked');
-    $(".activities input")[2*i+1].disabled = false;
-    $(".activities input")[2*i+3].disabled = false;
-    $(".activities input")[i].disabled = true;
-}
+$activityEvents.change(function(e){
+  for (let i = 0; i < morningActivity.length; i++) {
+  if(e.target.className==="morningTime"){
+      morningActivity[i].disabled = true;
+      e.target.disabled = false;
+    }if(e.target.checked ===false){
+      morningActivity[i].disabled = false;
+    }
+  }
+
+  for (let i = 0; i < dayActivity.length; i++) {
+  if(e.target.className==="dayTime"){
+      dayActivity[i].disabled = true;
+      e.target.disabled = false;
+    }if(e.target.checked ===false){
+      dayActivity[i].disabled = false;
+    }
+  }
+  // if($activityEvents[i].checked){
+  //   $activityEvents[i].disabled = false;
+  // } else if(e.target.checked===false){
+  //   $activityEvents[i].disabled = false;
+  // }
+
 
 });
