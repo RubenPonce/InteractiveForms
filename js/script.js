@@ -135,3 +135,20 @@ Credit Card field should only accept a number between 13 and 16 digits.
 The Zip Code field should accept a 5-digit number.
 The CVV should only accept a number that is exactly 3 digits long.
 */
+//select name input field value
+//create regex
+//if regex test name input value is not true
+//let the user know they're dumb
+const nameRegex = /^[A-Za-z]+$/;
+$("#name").change(function(){
+  console.log($(this).val());
+  if( nameRegex.test( $(this).val() ) ){
+    console.log("this is totally valid");
+      $("#name").removeClass("invalidStyle");
+      $("#name").prev().text("Name:")
+  } else {
+    $("#name").addClass("invalidStyle");
+    $("#name").prev().append(" <span style = 'color: red'>*Please enter a valid name</span>");
+    console.log("this is invalid");
+  }
+});
