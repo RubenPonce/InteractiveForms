@@ -3,7 +3,34 @@ console.log('interactive form test');
 //if option value = "other"
   //create input field type "text" under options
 /*-----------------Job Title-----------------*/
+function toggleValidClass(idValue, addFirst){
+if(addFirst ==="first"){
+  idValue.addClass("validStyle");
+  idValue.removeClass("invalidStyle");
+}
+else {
+  idValue.addClass("invalidStyle");
+  idValue.removeClass("validStyle");
+}
+}
 
+function validation( regexVal, idVal,text ){
+$(idVal).change(function(){
+  console.log($(this).val());
+  if( regexVal.test( $(this).val() ) ){
+    console.log("this is totally valid");
+      toggleValidClass(idVal, "first");
+      idVal.prev().text(`${text}`)
+  } else {
+    if(idVal.prop("class")!= "invalidStyle"){
+    idVal.prev().append(`<span style = 'color: red'> *enter a valid ${text}:</span>`);
+  }
+    toggleValidClass(idVal, "last")
+    console.log("this is invalid");
+
+  }
+});
+}
 
 function prependOption(){
   $("#color").prepend('<option selected disabled hidden>Choose a design </option>');
@@ -128,9 +155,6 @@ $activityEvents.change(function(e){
       $(".activities span").text("");
     }
 });
-
-
-
 /*-----------------Payment Options-----------------*/
 $paymentOptions = $("#payment option");
 $creditCardDetails = $("#credit-card");
@@ -152,44 +176,15 @@ $("#payment").change(function(){
 } else if($(this).val()==="bitcoin"){
           $($bitcoin).show();
 }
-
 });
 
 /*-----------------Form Validation-----------------*/
-
 //Validation for the Name input
-const nameRegex = /^[A-Za-z]+ ?[A-Za-z]* ?[A-Za-z]* ?$/;
-$("#name").change(function(){
-  console.log($(this).val());
-  if( nameRegex.test( $(this).val() ) ){
-    console.log("this is totally valid");
-      $("#name").addClass("validStyle");
-      $("#name").removeClass("invalidStyle");
-      $("#name").prev().text("Name:")
-  } else {
-    if($("#name").prop("class")!= "invalidStyle"){
-    $("#name").prev().append(" <span style = 'color: red'>*Please enter a valid name</span>");
-  }
-    $("#name").removeClass("validStyle");
-    console.log("this is invalid");
-    $("#name").addClass("invalidStyle");
-  }
-});
-//validation for Email input
-const emailRegex = /^[A-Za-z0-9]*?_?[A-Za-z0-9]+@[A-Za-z0-9]*.[c][o][m]$/;
-$("#mail").change(function(){
-  console.log($(this).val());
-  if( emailRegex.test( $(this).val() ) ){
-    console.log("this is totally valid");
-      $("#mail").addClass("validStyle");
-      $("#mail").removeClass("invalidStyle");
-      $("#mail").prev().text("E-mail:")
-  } else {
-    if($("#mail").prop("class")!= "invalidStyle"){
-    $("#mail").prev().append(" <span style = 'color: red'>*Please enter a valid e-mail</span>");
-  }
-    $("#mail").removeClass("validStyle");
-    console.log("this is invalid");
-    $("#mail").addClass("invalidStyle");
-  }
-});
+validation( /^[A-Za-z]+ ?[A-Za-z]* ?[A-Za-z]* ?$/, $("#name"), 'Name:' );
+validation( /^[A-Za-z0-9]*?_?[A-Za-z0-9]+@[A-Za-z0-9]*.[c][o][m]$/, $("#mail"),'E-mail: ' );
+//validate Credit Card
+validation( /^\d{16}|\d{13}$/, $("#cc-num"),'Credit Card Number:' );
+  //validate zipcode
+  validation( /^\d{5}/, $("#zip"), 'Zip Code: ' );
+  //validation for cvv
+  validation( /^\d{3}/, $("#cvv"), 'CVV: ' );
