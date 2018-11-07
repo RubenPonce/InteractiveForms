@@ -62,8 +62,10 @@ $shirtDesign.change( function(){
 
 /*-----------------Events for the conference-----------------*/
 $activityEvents = $(".activities input");
+let totalCost= 0;
 const labelofInputAM = /Tuesday ?9[a][m]/;
 const labelofInputPM = /Tuesday ?1[p][m]/;
+const eventRegex = /[^\$]\d*$/;
   let morningActivity = [];
   let dayActivity = [];
   /*create arrays based on timing of the events that conflict by gathering
@@ -94,11 +96,27 @@ $activityEvents.change(function(e){
   if(e.target.className==="dayTime"){
       dayActivity[i].disabled = true;
       e.target.disabled = false;
-    }if(e.target.checked ===false&&e.target.className ==="dayTime"){
+    }if(e.target.checked ===false&& e.target.className ==="dayTime"){
       dayActivity[i].disabled = false;
     }
-  }
+  }//cost = x
+  //cost = cost+ x
+  //add up total costs of events that are checked
+      if(e.target.checked){
+        console.log(e.target);
+      totalCost += +eventRegex.exec(e.target.parentElement.textContent)[0];
+    } else if(e.target.checked === false){
+      totalCost += -+eventRegex.exec(e.target.parentElement.textContent)[0];
+    }
+    console.log(totalCost);
+    if($(".activities p")){
+      $(".activities p").remove();
+    }
+    $(".activities").append(`<p class = "money">Total Cost: $${totalCost}</p>`);
 });
+
+
+
 /*-----------------Payment Options-----------------*/
 $paymentOptions = $("#payment option");
 $creditCardDetails = $("#credit-card");
@@ -124,7 +142,7 @@ $("#payment").change(function(){
 });
 
 /*-----------------Form Validation-----------------*/
-/*
+
 //Validation for the Name input
 const nameRegex = /^[A-Za-z]+ ?[A-Za-z]* ?[A-Za-z]* ?$/;
 $("#name").change(function(){
@@ -143,8 +161,6 @@ $("#name").change(function(){
     $("#name").addClass("invalidStyle");
   }
 });
-
-
 //validation for Email input
 const emailRegex = /^[A-Za-z0-9]*?_?[A-Za-z0-9]+@[A-Za-z0-9]*.[c][o][m]$/;
 $("#mail").change(function(){
@@ -163,3 +179,6 @@ $("#mail").change(function(){
     $("#mail").addClass("invalidStyle");
   }
 });
+
+//validation for Activity events
+//user must select at least one event.
