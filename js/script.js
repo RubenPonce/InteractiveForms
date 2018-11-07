@@ -33,9 +33,17 @@ $jobTitle.change( function(){
 /*-----------------Shirt Design-----------------*/
 $shirtDesign = $("#design");
 prependOption();
+//hide the color options on page load
+$("#colors-js-puns").hide();
 $shirtDesign.change( function(){
   $shirtOptions = $("#color option")
-  //selects only js pun designs
+//show or hide the color options if a value is selected
+if($("#design").val()=== "js puns"||$("#design").val()==="heart js"){
+  $("#colors-js-puns").show();
+} else if($("#design").val()){
+  $("#colors-js-puns").hide();
+}
+//selects only js pun designs
   if($(this).val()==="js puns"){
       for (let i = 0; i < $shirtOptions.length; i++) {
           if(i>3){
@@ -58,8 +66,6 @@ $shirtDesign.change( function(){
       }
     }
   });
-
-
 /*-----------------Events for the conference-----------------*/
 $activityEvents = $(".activities input");
 let totalCost= 0;
@@ -113,6 +119,14 @@ $activityEvents.change(function(e){
       $(".activities p").remove();
     }
     $(".activities").append(`<p class = "money">Total Cost: $${totalCost}</p>`);
+//validation for activities
+    if(totalCost===0){
+        $("form").addClass("invalidStyle");
+      $(".activities").append("<span style = 'color:red'> *Please select at least one event</span>");
+    } else if(totalCost>0){
+      $("form").removeClass("invalidStyle");
+      $(".activities span").text("");
+    }
 });
 
 
@@ -179,6 +193,3 @@ $("#mail").change(function(){
     $("#mail").addClass("invalidStyle");
   }
 });
-
-//validation for Activity events
-//user must select at least one event.
