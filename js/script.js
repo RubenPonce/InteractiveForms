@@ -123,32 +123,43 @@ $("#payment").change(function(){
 
 });
 
-/*-----------------Validations-----------------*/
-/*add validation to the name
-Form validation
-If any of the following validation errors exist, prevent the user from submitting the form:
-Name field can't be blank.
-Email field must be a validly formatted e-mail address (you don't have to check that it's a real e-mail address, just that it's formatted like one: dave@teamtreehouse.com for example.
-User must select at least one checkbox under the "Register for Activities" section of the form.
-If the selected payment option is "Credit Card," make sure the user has supplied a Credit Card number, a Zip Code, and a 3 number CVV value before the form can be submitted.
-Credit Card field should only accept a number between 13 and 16 digits.
-The Zip Code field should accept a 5-digit number.
-The CVV should only accept a number that is exactly 3 digits long.
-*/
-//select name input field value
-//create regex
-//if regex test name input value is not true
-//let the user know they're dumb
-const nameRegex = /^[A-Za-z]+$/;
+/*-----------------Form Validation-----------------*/
+/*
+//Validation for the Name input
+const nameRegex = /^[A-Za-z]+ ?[A-Za-z]* ?[A-Za-z]* ?$/;
 $("#name").change(function(){
   console.log($(this).val());
   if( nameRegex.test( $(this).val() ) ){
     console.log("this is totally valid");
+      $("#name").addClass("validStyle");
       $("#name").removeClass("invalidStyle");
       $("#name").prev().text("Name:")
   } else {
-    $("#name").addClass("invalidStyle");
+    if($("#name").prop("class")!= "invalidStyle"){
     $("#name").prev().append(" <span style = 'color: red'>*Please enter a valid name</span>");
+  }
+    $("#name").removeClass("validStyle");
     console.log("this is invalid");
+    $("#name").addClass("invalidStyle");
+  }
+});
+
+
+//validation for Email input
+const emailRegex = /^[A-Za-z0-9]*?_?[A-Za-z0-9]+@[A-Za-z0-9]*.[c][o][m]$/;
+$("#mail").change(function(){
+  console.log($(this).val());
+  if( emailRegex.test( $(this).val() ) ){
+    console.log("this is totally valid");
+      $("#mail").addClass("validStyle");
+      $("#mail").removeClass("invalidStyle");
+      $("#mail").prev().text("E-mail:")
+  } else {
+    if($("#mail").prop("class")!= "invalidStyle"){
+    $("#mail").prev().append(" <span style = 'color: red'>*Please enter a valid e-mail</span>");
+  }
+    $("#mail").removeClass("validStyle");
+    console.log("this is invalid");
+    $("#mail").addClass("invalidStyle");
   }
 });
