@@ -1,4 +1,3 @@
-console.log("interactive form test");
 /*-----------------Function Declarations-----------------*/
 function preventForm() {
   $("form").on("click", function(e) {
@@ -7,7 +6,10 @@ function preventForm() {
 }
 function enableForm() {
   $("form").on("click", function(e) {
-    $("form").unbind('submit').submit();
+    $("form")
+      .unbind("submit")
+      .submit();
+      return true
   });
 }
 function toggleValidClass(idValue, addFirst) {
@@ -96,6 +98,13 @@ let dayActivity = [];
 //shirt design declarations
 $shirtDesign = $("#design");
 prependOption();
+//payment declarations
+$paymentOptions = $("#payment option");
+$creditCardDetails = $("#credit-card");
+$paypal = $("p")[0];
+$bitcoin = $("p")[1];
+$($paypal).hide();
+$($bitcoin).hide();
 /*-----------------Job Title-----------------*/
 //hides text input field from view until "other" occupation is selected
 otherJobTitle();
@@ -116,67 +125,66 @@ $shirtDesign.change(function() {
 /*-----------------Events for the conference-----------------*/
 /*create arrays based on timing of the events that conflict by gathering
    a conflicting event using regex and declare a class name*/
-   for (let i = 0; i < $activityEvents.length; i++) {
-     if (labelofInputAM.test($activityEvents.parent()[i].textContent)) {
-       morningActivity.push($activityEvents[i]);
-       $activityEvents[i].className = "morningTime";
-     } else if (labelofInputPM.test($activityEvents.parent()[i].textContent)) {
-       dayActivity.push($activityEvents[i]);
-       $activityEvents[i].className = "dayTime";
-     }
-   }
-   //makes the events  disable if they are at conflicting times
-   $activityEvents.change(function(e) {
-     //disables any morning event that conflicts with the selected event
-     for (let i = 0; i < morningActivity.length; i++) {
-       if (e.target.className === "morningTime") {
-         morningActivity[i].disabled = true;
-         e.target.disabled = false;
-       }
-       if (e.target.checked === false && e.target.className === "morningTime") {
-         morningActivity[i].disabled = false;
-       }
-     }
-     //diables any day time event that conflicts with the selected event
-     for (let i = 0; i < dayActivity.length; i++) {
-       if (e.target.className === "dayTime") {
-         dayActivity[i].disabled = true;
-         e.target.disabled = false;
-       }
-       if (e.target.checked === false && e.target.className === "dayTime") {
-         dayActivity[i].disabled = false;
-       }
-     }
-     //add up total costs of events that are checked
-     if (e.target.checked) {
-       console.log(e.target);
-       totalCost += +eventRegex.exec(e.target.parentElement.textContent)[0];
-     } else if (e.target.checked === false) {
-       totalCost += -+eventRegex.exec(e.target.parentElement.textContent)[0];
-     }
-     console.log(totalCost);
-     if ($(".activities p")) {
-       $(".activities p").remove();
-     }
-     $(".activities").append(`<p class = "money">Total Cost: $${totalCost}</p>`);
-     //Validation for activities
-     if (totalCost === 0) {
-       $("form").addClass("invalidStyle");
-       $(".activities").append(
-         "<span style = 'color:red'> *Please select at least one event</span>"
-       );
-     } else if (totalCost > 0) {
-       $("form").removeClass("invalidStyle");
-       $(".activities span").text("");
-     }
-   });
+for (let i = 0; i < $activityEvents.length; i++) {
+  if (labelofInputAM.test($activityEvents.parent()[i].textContent)) {
+    morningActivity.push($activityEvents[i]);
+    $activityEvents[i].className = "morningTime";
+  } else if (labelofInputPM.test($activityEvents.parent()[i].textContent)) {
+    dayActivity.push($activityEvents[i]);
+    $activityEvents[i].className = "dayTime";
+  }
+}
+//makes the events  disable if they are at conflicting times
+$activityEvents.change(function(e) {
+  //disables any morning event that conflicts with the selected event
+  for (let i = 0; i < morningActivity.length; i++) {
+    if (e.target.className === "morningTime") {
+      morningActivity[i].disabled = true;
+      e.target.disabled = false;
+    }
+    if (e.target.checked === false && e.target.className === "morningTime") {
+      morningActivity[i].disabled = false;
+    }
+  }
+  //diables any day time event that conflicts with the selected event
+  for (let i = 0; i < dayActivity.length; i++) {
+    if (e.target.className === "dayTime") {
+      dayActivity[i].disabled = true;
+      e.target.disabled = false;
+    }
+    if (e.target.checked === false && e.target.className === "dayTime") {
+      dayActivity[i].disabled = false;
+    }
+  }
+  //add up total costs of events that are checked
+  if (e.target.checked) {
+    console.log(e.target);
+    totalCost += +eventRegex.exec(e.target.parentElement.textContent)[0];
+  } else if (e.target.checked === false) {
+    totalCost += -+eventRegex.exec(e.target.parentElement.textContent)[0];
+  }
+  if ($(".activities p")) {
+    $(".activities p").remove();
+  }
+  $(".activities").append(
+    $(`<p class = "money">Total Cost: $${totalCost}</p>`)
+      .hide()
+      .fadeIn(500)
+  );
+  //Validation for event activities
+  if (totalCost === 0) {
+    $("form").addClass("invalidStyle");
+    $(".activities").append(
+      "<span style = 'color:red'> *Please select at least one event</span>"
+    );
+    preventForm();
+  } else if (totalCost > 0) {
+    $("form").removeClass("invalidStyle");
+    $(".activities span").text("");
+    enableForm()
+  }
+});
 /*-----------------Payment Options-----------------*/
-$paymentOptions = $("#payment option");
-$creditCardDetails = $("#credit-card");
-$paypal = $("p")[0];
-$bitcoin = $("p")[1];
-$($paypal).hide();
-$($bitcoin).hide();
 $("#payment option")[1].selected = true;
 $("#payment").change(function() {
   if (
