@@ -181,14 +181,17 @@ button:hover {
 }
 
 /* =================================
-  Validation Styles
+  Added Styles
 ==================================== */
 .invalidStyle{
-  border: red solid 2px;
-  box-shadow: 1px 1px;
+  border: red solid 1px;
+  box-shadow: -1px -1px;
 }
 
 .validStyle{
-  border: solid rgb(147, 252, 104) 2px;
+  border: solid rgb(147, 252, 104) 1px;
   box-shadow: 1px 1px;
+}
+.money{
+  color: rgb(147, 252, 104);
 }
