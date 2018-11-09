@@ -6,15 +6,14 @@ function preventForm() {
 }
 function enableForm() {
   $("form").on("click", function(e) {
-    $("form")
-      .unbind("click");
+    $("form").unbind("click");
   });
 }
-  // else {
-  //   $("form").on("click"), function(e){
-  //     $("form").
-  //   }
-  // }
+// else {
+//   $("form").on("click"), function(e){
+//     $("form").
+//   }
+// }
 
 function toggleValidClass(idValue, addFirst) {
   if (addFirst === "first") {
@@ -30,13 +29,10 @@ function toggleValidClass(idValue, addFirst) {
 
 function validation(regexVal, idVal, text) {
   $(idVal).change(function() {
-    console.log($(this).val());
     if (regexVal.test($(this).val())) {
-      console.log("this is totally valid");
       toggleValidClass(idVal, "first");
       enableForm();
       idVal.prev().text(`${text}`);
-
     } else {
       if (idVal.prop("class") != "invalidStyle") {
         idVal
@@ -44,7 +40,6 @@ function validation(regexVal, idVal, text) {
           .append(`<span style = 'color: red'> *enter a valid ${text}</span>`);
       }
       toggleValidClass(idVal, "last");
-      console.log("this is invalid");
       preventForm();
     }
   });
@@ -92,19 +87,22 @@ function otherJobTitle() {
   });
 }
 
-function testRegex(regex,newArray, parentArray,desiredClass,counter){
-  if(regex.test(parentArray.parent()[counter].textContent)){
+function testRegex(regex, newArray, parentArray, desiredClass, counter) {
+  if (regex.test(parentArray.parent()[counter].textContent)) {
     newArray.push(parentArray[counter]);
   }
 }
 
-function disableCheckboxes(array, className, event){
+function disableCheckboxes(array, className, event) {
   for (let i = 0; i < array.length; i++) {
     if (event.target.className === className) {
       array[i].disabled = true;
       event.target.disabled = false;
     }
-    if (event.target.checked === false && event.target.className === className) {
+    if (
+      event.target.checked === false &&
+      event.target.className === className
+    ) {
       array[i].disabled = false;
     }
   }
@@ -155,17 +153,16 @@ $shirtDesign.change(function() {
 /*create arrays based on timing of the events that conflict by gathering
    a conflicting event using regex and declare a class name*/
 for (let i = 0; i < $activityEvents.length; i++) {
-  testRegex(labelofInputAM,morningActivity,$activityEvents,"morningTime",i);
-  testRegex(labelofInputPM,dayActivity,$activityEvents,"dayTime",i);
+  testRegex(labelofInputAM, morningActivity, $activityEvents, "morningTime", i);
+  testRegex(labelofInputPM, dayActivity, $activityEvents, "dayTime", i);
 }
 //makes the events  disable if they are at conflicting times
 $activityEvents.change(function(e) {
   //disables any morning event or day event that conflicts with the selected event
-  disableCheckboxes(morningActivity, "morningTime",e);
-  disableCheckboxes(dayActivity, "dayTime",e)
+  disableCheckboxes(morningActivity, "morningTime", e);
+  disableCheckboxes(dayActivity, "dayTime", e);
   //add up total costs of events that are checked
   if (e.target.checked) {
-    console.log(e.target);
     totalCost += +eventRegex.exec(e.target.parentElement.textContent)[0];
   } else if (e.target.checked === false) {
     totalCost += -+eventRegex.exec(e.target.parentElement.textContent)[0];
@@ -180,20 +177,16 @@ $activityEvents.change(function(e) {
   );
   //validation for checkboxes
   let checked = $("input:checked");
-  if(checked.length ===0){
-    console.log(checked.length + ' no checkboxes checked');
-    $("button").on("click", (e)=>{
+  if (checked.length === 0) {
+    $("button").on("click", e => {
       e.preventDefault();
     });
-  }
-  else if(checked.length>0){
-      // $("button").on("click",(e)=>{
-        $("button").unbind("click");
-      // });
+  } else if (checked.length > 0) {
+    // $("button").on("click",(e)=>{
+    $("button").unbind("click");
+    // });
   }
 });
-
-
 
 /*-----------------Payment Options-----------------*/
 $("#payment option")[1].selected = true;
@@ -224,16 +217,26 @@ validation(
   $("#mail"),
   "E-mail: "
 );
-//validate Credit Card
+//Validation for Credit Card
+if($("#payment option")[1].selected){
 validation(/^\d{16}|\d{13}$/, $("#cc-num"), "Credit Card Number:");
+$("form").on("submit", () => {
+  if ($("#cc-num").val() === "") {
+    return false;
+  }
+});
+}
 //validate zipcode
 validation(/^\d{5}/, $("#zip"), "Zip Code: ");
 //validation for cvv
 validation(/^\d{3}/, $("#cvv"), "CVV: ");
 
 //while input fields are empty, do not submit form.
-$("form").on("submit",()=>{
-  if($("#name").val()===""||$("#cc-num").val()===""||$("#mail").val()===""){
+$("form").on("submit", () => {
+  if (
+    $("#name").val() === "" ||
+    $("#mail").val() === ""
+  ) {
     return false;
   }
-})
+});
