@@ -91,6 +91,24 @@ function otherJobTitle() {
     }
   });
 }
+
+function testRegex(regex,newArray, parentArray,desiredClass,counter){
+  if(regex.test(parentArray.parent()[counter].textContent)){
+    newArray.push(parentArray[counter]);
+  }
+}
+
+function disableCheckboxes(array, className, event){
+  for (let i = 0; i < array.length; i++) {
+    if (event.target.className === className) {
+      array[i].disabled = true;
+      event.target.disabled = false;
+    }
+    if (event.target.checked === false && event.target.className === className) {
+      array[i].disabled = false;
+    }
+  }
+}
 /*-----------------Variable Declarations-----------------*/
 //focus on name text field
 $("#name").focus();
@@ -137,37 +155,14 @@ $shirtDesign.change(function() {
 /*create arrays based on timing of the events that conflict by gathering
    a conflicting event using regex and declare a class name*/
 for (let i = 0; i < $activityEvents.length; i++) {
-  if (labelofInputAM.test($activityEvents.parent()[i].textContent)) {
-    morningActivity.push($activityEvents[i]);
-    $activityEvents[i].className = "morningTime";
-  } else if (labelofInputPM.test($activityEvents.parent()[i].textContent)) {
-    dayActivity.push($activityEvents[i]);
-    $activityEvents[i].className = "dayTime";
-  }
+  testRegex(labelofInputAM,morningActivity,$activityEvents,"morningTime",i);
+  testRegex(labelofInputPM,dayActivity,$activityEvents,"dayTime",i);
 }
 //makes the events  disable if they are at conflicting times
 $activityEvents.change(function(e) {
-
-  //disables any morning event that conflicts with the selected event
-  for (let i = 0; i < morningActivity.length; i++) {
-    if (e.target.className === "morningTime") {
-      morningActivity[i].disabled = true;
-      e.target.disabled = false;
-    }
-    if (e.target.checked === false && e.target.className === "morningTime") {
-      morningActivity[i].disabled = false;
-    }
-  }
-  //diables any day time event that conflicts with the selected event
-  for (let i = 0; i < dayActivity.length; i++) {
-    if (e.target.className === "dayTime") {
-      dayActivity[i].disabled = true;
-      e.target.disabled = false;
-    }
-    if (e.target.checked === false && e.target.className === "dayTime") {
-      dayActivity[i].disabled = false;
-    }
-  }
+  //disables any morning event or day event that conflicts with the selected event
+  disableCheckboxes(morningActivity, "morningTime",e);
+  disableCheckboxes(dayActivity, "dayTime",e)
   //add up total costs of events that are checked
   if (e.target.checked) {
     console.log(e.target);
@@ -183,6 +178,7 @@ $activityEvents.change(function(e) {
       .hide()
       .fadeIn(500)
   );
+  //validation for checkboxes
   let checked = $("input:checked");
   if(checked.length ===0){
     console.log(checked.length + ' no checkboxes checked');
@@ -196,8 +192,7 @@ $activityEvents.change(function(e) {
       // });
   }
 });
-//if ALL events are unchecked
-//
+
 
 
 /*-----------------Payment Options-----------------*/
@@ -236,6 +231,7 @@ validation(/^\d{5}/, $("#zip"), "Zip Code: ");
 //validation for cvv
 validation(/^\d{3}/, $("#cvv"), "CVV: ");
 
+//while input fields are empty, do not submit form.
 $("form").on("submit",()=>{
   if($("#name").val()===""||$("#cc-num").val()===""||$("#mail").val()===""){
     return false;
