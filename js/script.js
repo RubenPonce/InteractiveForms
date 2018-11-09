@@ -90,6 +90,7 @@ function otherJobTitle() {
 function testRegex(regex, newArray, parentArray, desiredClass, counter) {
   if (regex.test(parentArray.parent()[counter].textContent)) {
     newArray.push(parentArray[counter]);
+    parentArray[counter].className = desiredClass;
   }
 }
 
@@ -132,10 +133,7 @@ $paypal = $("p")[0];
 $bitcoin = $("p")[1];
 $($paypal).hide();
 $($bitcoin).hide();
-//disable button on pageLoad until checkbox is checked
-$("button").on("click", e => {
-  e.preventDefault();
-});
+
 /*-----------------Job Title-----------------*/
 //hides text input field from view until "other" occupation is selected
 otherJobTitle();
@@ -156,6 +154,8 @@ $shirtDesign.change(function() {
 /*-----------------Events for the conference-----------------*/
 /*create arrays based on timing of the events that conflict by gathering
    a conflicting event using regex and declare a class name*/
+   let checked = $("input:checked");
+   checked.length = 0;
 for (let i = 0; i < $activityEvents.length; i++) {
   testRegex(labelofInputAM, morningActivity, $activityEvents, "morningTime", i);
   testRegex(labelofInputPM, dayActivity, $activityEvents, "dayTime", i);
@@ -182,15 +182,15 @@ $activityEvents.change(function(e) {
       .fadeIn(500)
   );
   //validation for checkboxes
-  let checked = $("input:checked");
+  checked = $("input:checked");
   if (checked.length === 0) {
     $("button").on("click", e => {
       e.preventDefault();
     });
   } else if (checked.length > 0) {
-    $("button").on("click",(e)=>{
+    // $("button").on("click",(e)=>{
     $("button").unbind("click");
-    });
+    // });
   }
 });
 
@@ -226,16 +226,16 @@ validation(
 //Validation for Credit Card
 if($("#payment option")[1].selected){
 validation(/^\d{16}|\d{13}$/, $("#cc-num"), "Credit Card Number:");
-$("form").on("submit", () => {
-  if ($("#cc-num").val() === "") {
-    return false;
-  }
-});
-}
 //validate zipcode
 validation(/^\d{5}/, $("#zip"), "Zip Code: ");
 //validation for cvv
 validation(/^\d{3}/, $("#cvv"), "CVV: ");
+$("form").on("submit", () => {
+  if ($("#cc-num").val() === ""||$("#zip").val() === ""||$("#cvv").val() === ""||checked.length === 0) {
+    return false;
+  }
+});
+}
 
 //while input fields are empty, do not submit form.
 $("form").on("submit", () => {
@@ -245,4 +245,5 @@ $("form").on("submit", () => {
   ) {
     return false;
   }
+
 });
