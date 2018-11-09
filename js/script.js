@@ -132,6 +132,10 @@ $paypal = $("p")[0];
 $bitcoin = $("p")[1];
 $($paypal).hide();
 $($bitcoin).hide();
+//disable button on pageLoad until checkbox is checked
+$("button").on("click", e => {
+  e.preventDefault();
+});
 /*-----------------Job Title-----------------*/
 //hides text input field from view until "other" occupation is selected
 otherJobTitle();
@@ -158,6 +162,8 @@ for (let i = 0; i < $activityEvents.length; i++) {
 }
 //makes the events  disable if they are at conflicting times
 $activityEvents.change(function(e) {
+  //enables submit form when checkbox is clicked
+  $("button").unbind("click");
   //disables any morning event or day event that conflicts with the selected event
   disableCheckboxes(morningActivity, "morningTime", e);
   disableCheckboxes(dayActivity, "dayTime", e);
@@ -182,9 +188,9 @@ $activityEvents.change(function(e) {
       e.preventDefault();
     });
   } else if (checked.length > 0) {
-    // $("button").on("click",(e)=>{
+    $("button").on("click",(e)=>{
     $("button").unbind("click");
-    // });
+    });
   }
 });
 
