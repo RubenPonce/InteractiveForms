@@ -7,18 +7,24 @@ function preventForm() {
 function enableForm() {
   $("form").on("click", function(e) {
     $("form")
-      .unbind("submit")
-      .submit();
-      return true
+      .unbind("click");
   });
 }
+  // else {
+  //   $("form").on("click"), function(e){
+  //     $("form").
+  //   }
+  // }
+
 function toggleValidClass(idValue, addFirst) {
   if (addFirst === "first") {
     idValue.addClass("validStyle");
     idValue.removeClass("invalidStyle");
+    enableForm();
   } else {
     idValue.addClass("invalidStyle");
     idValue.removeClass("validStyle");
+    preventForm();
   }
 }
 
@@ -28,8 +34,9 @@ function validation(regexVal, idVal, text) {
     if (regexVal.test($(this).val())) {
       console.log("this is totally valid");
       toggleValidClass(idVal, "first");
-      idVal.prev().text(`${text}`);
       enableForm();
+      idVal.prev().text(`${text}`);
+
     } else {
       if (idVal.prop("class") != "invalidStyle") {
         idVal
@@ -64,11 +71,13 @@ function displayShirtColors(idValue) {
     }
   }
 }
+
 function prependOption() {
   $("#color").prepend(
     "<option selected disabled hidden>Choose a design </option>"
   );
 }
+
 function otherJobTitle() {
   $otherLabel.hide();
   $jobInput.hide();
@@ -83,6 +92,8 @@ function otherJobTitle() {
   });
 }
 /*-----------------Variable Declarations-----------------*/
+//focus on name text field
+$("#name").focus();
 //job title declarations
 $jobTitle = $("#title");
 $jobInput = $("#input");
@@ -136,6 +147,7 @@ for (let i = 0; i < $activityEvents.length; i++) {
 }
 //makes the events  disable if they are at conflicting times
 $activityEvents.change(function(e) {
+
   //disables any morning event that conflicts with the selected event
   for (let i = 0; i < morningActivity.length; i++) {
     if (e.target.className === "morningTime") {
@@ -171,19 +183,23 @@ $activityEvents.change(function(e) {
       .hide()
       .fadeIn(500)
   );
-  //Validation for event activities
-  if (totalCost === 0) {
-    $("form").addClass("invalidStyle");
-    $(".activities").append(
-      "<span style = 'color:red'> *Please select at least one event</span>"
-    );
-    preventForm();
-  } else if (totalCost > 0) {
-    $("form").removeClass("invalidStyle");
-    $(".activities span").text("");
-    enableForm()
+  let checked = $("input:checked");
+  if(checked.length ===0){
+    console.log(checked.length + ' no checkboxes checked');
+    $("button").on("click", (e)=>{
+      e.preventDefault();
+    });
+  }
+  else if(checked.length>0){
+      // $("button").on("click",(e)=>{
+        $("button").unbind("click");
+      // });
   }
 });
+//if ALL events are unchecked
+//
+
+
 /*-----------------Payment Options-----------------*/
 $("#payment option")[1].selected = true;
 $("#payment").change(function() {
@@ -219,3 +235,9 @@ validation(/^\d{16}|\d{13}$/, $("#cc-num"), "Credit Card Number:");
 validation(/^\d{5}/, $("#zip"), "Zip Code: ");
 //validation for cvv
 validation(/^\d{3}/, $("#cvv"), "CVV: ");
+
+$("form").on("submit",()=>{
+  if($("#name").val()===""||$("#cc-num").val()===""||$("#mail").val()===""){
+    return false;
+  }
+})
