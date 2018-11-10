@@ -1,12 +1,12 @@
 /*-----------------Function Declarations-----------------*/
 function preventForm() {
-  $("form").on("submit", function(e) {
+  $("form").on("click", function(e) {
     e.preventDefault();
   });
 }
 function enableForm() {
-  $("form").on("submit", function(e) {
-    $("form").unbind("submit");
+  $("form").on("click", function(e) {
+    $("form").unbind("click");
   });
 }
 // else {
@@ -186,7 +186,6 @@ $activityEvents.change(function(e) {
   if (checked.length === 0) {
     $("button").on("click", e => {
       e.preventDefault();
-      alert('select at least 1 event');
     });
   } else if (checked.length > 0) {
     // $("button").on("click",(e)=>{
@@ -226,20 +225,17 @@ validation(
 );
 //Validation for Credit Card
 if($("#payment option")[1].selected){
-validation(/^[0-9]{13,16}$/, $("#cc-num"), "Card Number:");
+validation(/^\d{16}|\d{13}$/, $("#cc-num"), "Credit Card Number:");
 //validate zipcode
 validation(/^\d{5}$/, $("#zip"), "Zip Code: ");
 //validation for cvv
 validation(/^\d{3}$/, $("#cvv"), "CVV: ");
 $("form").on("submit", () => {
   if ($("#cc-num").val() === ""||$("#zip").val() === ""||$("#cvv").val() === ""||checked.length === 0) {
-    alert('empty input fields');
+    alert('empty credit card field');
     return false;
   }
 });
-}
-if($("#payment option")[2].selected ||$("#payment option")[3].selected){
-  $("form").unbind("submit");
 }
 
 //while input fields are empty, do not submit form.
