@@ -187,7 +187,7 @@ const cvv = $("#cvv");
 
 const nameRegex = /^[A-Za-z]+ ?[A-Za-z]* ?[A-Za-z]* ?$/;
 const emailRegex = /^[A-Za-z0-9]*?_?[A-Za-z0-9]+@[A-Za-z0-9]*.[c][o][m]$/;
-const cardRegex = /^\d{16}|\d{13}$/;
+const cardRegex = /^\d{13,16}$/;
 const zipRegex = /^\d{5}$/;
 const cvvRegex = /^\d{3}$/;
 // $("button").on("click", (e) => {
