@@ -1,19 +1,4 @@
 /*-----------------Function Declarations-----------------*/
-function preventForm() {
-  $("form").on("click", function(e) {
-    e.preventDefault();
-  });
-}
-function enableForm() {
-  $("form").on("click", function(e) {
-    $("form").unbind("click");
-  });
-}
-// else {
-//   $("form").on("click"), function(e){
-//     $("form").
-//   }
-// }
 
 function toggleValidClass(idValue, addFirst) {
   if (addFirst === "first") {
@@ -25,24 +10,6 @@ function toggleValidClass(idValue, addFirst) {
     idValue.removeClass("validStyle");
     preventForm();
   }
-}
-
-function validation(regexVal, idVal, text) {
-  $(idVal).change(function() {
-    if (regexVal.test($(this).val())) {
-      toggleValidClass(idVal, "first");
-      enableForm();
-      idVal.prev().text(`${text}`);
-    } else {
-      if (idVal.prop("class") != "invalidStyle") {
-        idVal
-          .prev()
-          .append(`<span style = 'color: red'> *enter a valid ${text}</span>`);
-      }
-      toggleValidClass(idVal, "last");
-      preventForm();
-    }
-  });
 }
 
 function displayShirtColors(idValue) {
@@ -108,9 +75,9 @@ function disableCheckboxes(array, className, event) {
     }
   }
 }
+
 /*-----------------Variable Declarations-----------------*/
-//focus on name text field
-$("#name").focus();
+
 //job title declarations
 $jobTitle = $("#title");
 $jobInput = $("#input");
@@ -154,16 +121,16 @@ $shirtDesign.change(function() {
 /*-----------------Events for the conference-----------------*/
 /*create arrays based on timing of the events that conflict by gathering
    a conflicting event using regex and declare a class name*/
-   let checked = $("input:checked");
-   checked.length = 0;
 for (let i = 0; i < $activityEvents.length; i++) {
   testRegex(labelofInputAM, morningActivity, $activityEvents, "morningTime", i);
   testRegex(labelofInputPM, dayActivity, $activityEvents, "dayTime", i);
 }
+let checked = $("input:checked");
+  checked.length = 0;
 //makes the events  disable if they are at conflicting times
 $activityEvents.change(function(e) {
   //enables submit form when checkbox is clicked
-  $("button").unbind("click");
+
   //disables any morning event or day event that conflicts with the selected event
   disableCheckboxes(morningActivity, "morningTime", e);
   disableCheckboxes(dayActivity, "dayTime", e);
@@ -181,20 +148,16 @@ $activityEvents.change(function(e) {
       .hide()
       .fadeIn(500)
   );
-  //validation for checkboxes
-  checked = $("input:checked");
-  if (checked.length === 0) {
-    $("button").on("click", e => {
-      e.preventDefault();
-    });
-  } else if (checked.length > 0) {
-    // $("button").on("click",(e)=>{
-    $("button").unbind("click");
-    // });
-  }
+    checked = $("input:checked");
+    if(checked.length ===0){
+      $(".activities").append(
+      $(`<p style="color: rgb(244, 60, 2);">*Please select at least 1 event</p>`));
+    }
 });
 
 /*-----------------Payment Options-----------------*/
+
+
 $("#payment option")[1].selected = true;
 $("#payment").change(function() {
   if (
@@ -213,38 +176,116 @@ $("#payment").change(function() {
   } else if ($(this).val() === "bitcoin") {
     $($bitcoin).show();
   }
+
 });
-/*-----------------Form Validation-----------------*/
-//Validation for the Name input
-validation(/^[A-Za-z]+ ?[A-Za-z]* ?[A-Za-z]* ?$/, $("#name"), "Name:");
-//Validation for Email input
-validation(
-  /^[A-Za-z0-9]*?_?[A-Za-z0-9]+@[A-Za-z0-9]*.[c][o][m]$/,
-  $("#mail"),
-  "E-mail: "
-);
-//Validation for Credit Card
-if($("#payment option")[1].selected){
-validation(/^\d{16}|\d{13}$/, $("#cc-num"), "Credit Card Number:");
-//validate zipcode
-validation(/^\d{5}$/, $("#zip"), "Zip Code: ");
-//validation for cvv
-validation(/^\d{3}$/, $("#cvv"), "CVV: ");
-$("form").on("submit", () => {
-  if ($("#cc-num").val() === ""||$("#zip").val() === ""||$("#cvv").val() === ""||checked.length === 0) {
-    alert('empty credit card field');
+$("#name").focus();
+const name = $("#name");
+const email = $("#mail");
+const card = $("#cc-num");
+const zip = $("#zip");
+const cvv = $("#cvv");
+
+const nameRegex = /^[A-Za-z]+ ?[A-Za-z]* ?[A-Za-z]* ?$/;
+const emailRegex = /^[A-Za-z0-9]*?_?[A-Za-z0-9]+@[A-Za-z0-9]*.[c][o][m]$/;
+const cardRegex = /^\d{16}|\d{13}$/;
+const zipRegex = /^\d{5}$/;
+const cvvRegex = /^\d{3}$/;
+// $("button").on("click", (e) => {
+// alert('fill out all fields');
+//   e.preventDefault();
+// });
+//validation for Name input
+function nameValidation() {
+  if (nameRegex.test(name.val())) {
+    return true;
+  } else {
     return false;
   }
-});
+}
+//email
+function emailValidation() {
+  if (emailRegex.test(email.val())) {
+    return true;
+  } else {
+    return false;
+  }
+}
+//card
+function cardValidation() {
+  if (cardRegex.test(card.val())) {
+    return true;
+  } else {
+    return false;
+  }
+}
+//zip
+function zipValidation() {
+  if (zipRegex.test(zip.val())) {
+    return true;
+  } else {
+    return false;
+  }
+}
+//cvv
+function cvvValidation() {
+  if (cvvRegex.test(cvv.val())) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
-//while input fields are empty, do not submit form.
-$("form").on("submit", () => {
-  if (
-    $("#name").val() === "" ||
-    $("#mail").val() === ""
-  ) {
-    return false;
+function changeTextBorder(input, regex) {
+  input.on("keyup", () => {
+    if (regex.test(input.val())) {
+      input.css({
+        border: "rgb(20, 241, 89) 2px solid"
+      });
+      console.log("This value is valid");
+    } else if (!regex.test(input.val())) {
+      input.css({
+        border: "rgb(244, 60, 2) 2px solid"
+      });
+      console.log("This value is invalid");
+    }
+  });
+}
+
+$("form").on("submit", e => {
+  if ($paymentOptions[2].selected || $paymentOptions[3].selected) {
+    if (
+      !nameValidation() ||
+      !emailValidation() ||
+      checked.length === 0 ||
+      name.val() === "" ||
+      email.val() === ""
+    ) {
+      alert("not all forms are filled correctly");
+      e.preventDefault();
+    }
+  } else if ($paymentOptions[1].selected) {
+    if (!cardValidation() || !zipValidation() || !cvvValidation()|| card.val()===""||zip.val()===""||cvv.val()==="") {
+      e.preventDefault();
+    }
+    if (
+      !nameValidation() ||
+      !emailValidation() ||
+      checked.length === 0 ||
+      name.val() === "" ||
+      email.val() === ""
+    ) {
+      alert("not all forms are filled correctly");
+      e.preventDefault();
+    }
+  }
+  if(checked.length===0){
+    alert("select at least 1 event before submitting");
   }
 
 });
+
+changeTextBorder(name, nameRegex);
+changeTextBorder(email, emailRegex);
+changeTextBorder(card, cardRegex);
+changeTextBorder(zip, zipRegex);
+changeTextBorder(cvv, cvvRegex);
